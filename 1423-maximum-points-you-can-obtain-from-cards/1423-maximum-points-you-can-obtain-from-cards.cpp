@@ -1,18 +1,35 @@
 class Solution {
 public:
     int maxScore(vector<int>& cardPoints, int k) {
-        int rsp = cardPoints.size()-k;
-        int leftSum = 0;
-        int rightSum = 0;
-        for(int j= rsp; j < size(cardPoints); j++){
-            rightSum += cardPoints[j];
+        int sum = 0;
+        int n = cardPoints.size();
+        
+        vector<int> cummulativeSumFromFront(n+1, 0);
+        vector<int> cummulativeSumFromBehind(n+1, 0);
+        
+        sum = 0;
+        for (int i=0; i<n; i++) {
+            sum += cardPoints[i];
+            cummulativeSumFromFront[i+1] = sum;
         }
-        int best = rightSum;
-        for(int i = 0; i<k; i++){
-            leftSum += cardPoints[i];
-            rightSum -= cardPoints[rsp+i];
-            best = max(best,leftSum+rightSum);
+        sum = 0;
+        for (int i=n-1; i>=0; i--) {
+            sum += cardPoints[i];
+            cummulativeSumFromBehind[i] = sum;
         }
-        return best;
+        
+        // Reversing is optional. I reversed it so that it would be easy
+        // to access sum of last (k-i) elements by just indexing at [k-i]
+        // Otherwise, I would have had to index it at [n-k+i] which would
+        // have made it difficult to read.
+        reverse(cummulativeSumFromBehind.begin(), cummulativeSumFromBehind.end());
+        
+        int answer = 0;
+        for(int i=0; i<=k; i++) {      
+            answer = max(answer, 
+                           cummulativeSumFromFront[i] // Sum of first 'i' cards.
+                         + cummulativeSumFromBehind[k-i]); // Sum of last 'k-i' cards.
+        }
+        return answer;
     }
 };
