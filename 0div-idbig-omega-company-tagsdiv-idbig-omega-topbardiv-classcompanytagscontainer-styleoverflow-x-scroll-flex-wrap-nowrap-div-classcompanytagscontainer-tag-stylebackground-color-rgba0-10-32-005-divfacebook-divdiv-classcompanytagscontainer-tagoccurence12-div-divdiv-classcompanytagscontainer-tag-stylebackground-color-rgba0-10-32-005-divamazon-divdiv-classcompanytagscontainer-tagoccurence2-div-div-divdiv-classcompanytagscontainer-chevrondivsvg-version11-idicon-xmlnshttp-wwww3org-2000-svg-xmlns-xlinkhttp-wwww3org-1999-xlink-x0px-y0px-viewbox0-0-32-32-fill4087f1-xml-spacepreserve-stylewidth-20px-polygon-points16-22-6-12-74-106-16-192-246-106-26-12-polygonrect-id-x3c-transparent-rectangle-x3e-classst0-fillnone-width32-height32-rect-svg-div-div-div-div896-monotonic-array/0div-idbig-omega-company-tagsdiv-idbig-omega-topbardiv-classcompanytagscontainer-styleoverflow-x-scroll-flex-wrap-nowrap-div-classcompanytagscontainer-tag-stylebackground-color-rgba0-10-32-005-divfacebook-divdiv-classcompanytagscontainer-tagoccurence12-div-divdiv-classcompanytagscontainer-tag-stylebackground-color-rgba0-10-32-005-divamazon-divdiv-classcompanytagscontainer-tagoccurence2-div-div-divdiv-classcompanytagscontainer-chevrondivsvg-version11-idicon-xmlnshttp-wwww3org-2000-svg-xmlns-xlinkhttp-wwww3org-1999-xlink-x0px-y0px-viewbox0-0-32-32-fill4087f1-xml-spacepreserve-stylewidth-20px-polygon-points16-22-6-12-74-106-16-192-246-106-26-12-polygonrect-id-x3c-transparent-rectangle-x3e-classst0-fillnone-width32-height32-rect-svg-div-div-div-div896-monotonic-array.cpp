@@ -7,12 +7,11 @@ public:
         for (int i = 1; i < A.size(); i++) {
             if (A[i] < A[i - 1]) {
                 decrease = true;
-            }
-            if (A[i] > A[i - 1]) {
+            } else if (A[i] > A[i - 1]) {
                 increase = true;
             }
         }
         
-        return increase && decrease ? false : true;
+        return !(increase && decrease);
     }
 };
